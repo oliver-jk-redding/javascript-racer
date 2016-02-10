@@ -59,12 +59,12 @@ html {
   background-size: contain;
 }
 
-.ship-0 {
+.ship-1 {
   background: url('images/spaceship1.png') center no-repeat;
   background-size: contain;
 }
 
-.ship-1 {
+.ship-2 {
   background: url('images/spaceship2.png') center no-repeat;
   background-size: contain;
 }
