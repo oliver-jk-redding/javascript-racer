@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+
+<head>
+  <meta charset="utf-8">
+
+  <title>Javascript Racer</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.css">
+  <link href="main.css" rel="stylesheet">
+
+  <script src="js/jQuery.js"></script>
+
+  <meta name="viewport" content="width=device-width">
+</head>
+
+<body>
+
+  <div class = "info_box">
+    <h1>Starship Racer</h1>
+    <h2>How to Play:</h2>
+    <p>Mash the keys as fast as you can to beat your opponent to planet Zorcon and claim everlasting fame! Change the distance of the race in light years below.</p>
+    <div class = "floater">
+      <p><strong>Player 1 Key:</strong> Q</p>
+      <p><strong>Player 2 Key:</strong> P</p>
+    </div>
+    <div class = "floater">
+      <button>New Game</button>
+      <select class="distance">
+        <option value="10" selected="">10 light years</option>
+        <option value="20">20 light years</option>
+        <option value="30">30 light years</option>
+      </select>
+    </div>
+  </div>
+  <div class = "track_container">
+    <table class="racer_table">
+      <tr id="player1_strip">
+        <td class="ship-0"></td>
+        <td></td>
+        <td></td>
+        <td></td>      
+        <td></td> 
+        <td rowspan = "2" class = "finish_line" style = "width:300;"></td>
+      </tr>
+      <tr id="player2_strip">
+        <td class="ship-1"></td>
+        <td></td>
+        <td></td>
+        <td></td>      
+        <td></td>       
+      </tr>    
+    </table>
+  </div>
+
+  <script src="racer.js"></script>
+</body>
+
+</html>
