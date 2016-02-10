@@ -1,63 +1,83 @@
-// document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function() {
     
     var ship1Pos = 0;
     var ship2Pos = 0;
-    var ship1Positions = document.querySelectorAll("td.player1_strip");
-    var ship2Positions = document.querySelectorAll("td.player2_strip");
+    var ship1Positions = document.querySelectorAll("tr.player1_strip td");
+    var ship2Positions = document.querySelectorAll("tr.player2_strip td"); 
 
-    function updatePlayerPosition1(ship) {  
-      console.log("check");
+    newGame();   
+
+    function updatePlayerPosition(ship) {        
       if(ship === "ship-1") {
-        console.log("check1");     
-        for (var i = 0; i < ship1Positions.length; ++i) {
-          var position = ship1Positions[i];
+        for (var i = 0; i < ship1Positions.length; ++i) {        
           if(i === ship1Pos) {
-            position.className = position.className.replace( /(?:^|\s)ship-1(?!\S)/g , '' );
+            ship1Positions[ship1Pos].className = ship1Positions[ship1Pos].className.replace( /(?:^|\s)ship-1(?!\S)/g , '' );
+            ship1Pos += 1;
+            ship1Positions[ship1Pos].className = "ship-1";
+            break;
           }
-        }           
-        ship1Pos += 1;
-        ship1Pos.className = "ship-1"; 
+        }               
         if(ship1Pos === 4) {
-          window.alert("Player 1 wins!")
+          alert("Player 1 wins!")
+          document.removeEventListener("keyup", checkKeyPressed, false); 
         }   
       }
-      else if(ship === "ship-2") {
-        console.log("check2");
-        for (var i = 0; i < ship1Positions.length; ++i) {
-          var position = ship1Positions[i];
-          if(i === ship1Pos) {
-            position.className = position.className.replace( /(?:^|\s)ship-1(?!\S)/g , '' );
+      else if(ship === "ship-2") {        
+        for (var i = 0; i < ship2Positions.length; ++i) {        
+          if(i === ship2Pos) {
+            ship2Positions[ship2Pos].className = ship2Positions[ship2Pos].className.replace( /(?:^|\s)ship-2(?!\S)/g , '' );
+            ship2Pos += 1;
+            ship2Positions[ship2Pos].className = "ship-2";
+            break;
           }
-        }  
-        ship2Positions[ship1Pos].className = ship2Positions[ship1Pos].className.replace( /(?:^|\s)ship-2(?!\S)/g , '' );
-        ship2Pos += 1;
-        ship2Pos.className = "ship-2";
+        }               
         if(ship2Pos === 4) {
-          window.alert("Player 2 wins!")
+          alert("Player 2 wins!")
+          document.removeEventListener("keyup", checkKeyPressed, false); 
         }    
-      }  
-      console.log("check3");
-    }   
-
-    /*function dealWithKeyboard(e) {  
-      console.log("checkoy");
-    }*/
-
-    var el = document.getElementById("racer_table");
-    el.addEventListener("keyup", dealWithKeyboard(), false);
-
-    function dealWithKeyboard(e) {  
-      console.log("checkoy");
+      }        
     }
 
-    /*function checkKeyPressed(e) {
-        if (e.keyCode === "81") {
-          console.log("hi1");
-          updatePlayerPosition("ship-1");
+    function checkKeyPressed(e) { 
+      console.log(e.keyCode)     
+      if (e.keyCode == "81") {                
+        updatePlayerPosition("ship-1");      
+      }
+      else if (e.keyCode == "80") {                
+        updatePlayerPosition("ship-2");        
+      }
+    }
+
+    function newGame() {      
+      returnShipToStart("ship-1");
+      returnShipToStart("ship-2");
+      document.addEventListener("keyup", checkKeyPressed, false);
+    }
+
+    function returnShipToStart(ship) {
+      if(ship === "ship-1") {
+        for (var i = 0; i < ship1Positions.length; ++i) {        
+          if(i === ship1Pos) {
+            ship1Positions[ship1Pos].className = ship1Positions[ship1Pos].className.replace( /(?:^|\s)ship-1(?!\S)/g , '' );
+            ship1Pos = 0;
+            ship1Positions[ship1Pos].className = "ship-1";
+            break;
+          }
+        } 
+      }    
+      else if(ship === "ship-2") {
+        for (var i = 0; i < ship2Positions.length; ++i) {        
+          if(i === ship2Pos) {
+            ship2Positions[ship2Pos].className = ship2Positions[ship2Pos].className.replace( /(?:^|\s)ship-2(?!\S)/g , '' );
+            ship2Pos = 0;
+            ship2Positions[ship2Pos].className = "ship-2";
+            break;
+          }
         }
-        else if (e.keyCode === "80") {
-          updatePlayerPosition("ship-2");
-          console.log("hi1");
-        }
-    }*/
-// });
+      }    
+    }
+        
+    var newGameBtn = document.getElementById("newGame");
+    newGameBtn.addEventListener("click", newGame, false);  
+    
+});
