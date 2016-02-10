@@ -25,7 +25,7 @@
     </div>
     <div class = "floater">
       <button id = "newGame">New Game</button>
-      <select class="distance">
+      <select id = "distance">
         <option value="10" selected="">10 light years</option>
         <option value="20">20 light years</option>
         <option value="30">30 light years</option>
@@ -33,21 +33,13 @@
     </div>
   </div>
   <div class = "track_container">
-    <table id="racer_table">
+    <table class="racer_table">
       <tr class="player1_strip">
-        <td class="ship-1"></td>
-        <td></td>
-        <td></td>
-        <td></td>      
-        <td></td> 
+        <td class="ship-1"></td>         
         <td rowspan = "2" class = "finish_line" style = "width:300;"></td>
       </tr>
       <tr class="player2_strip">
-        <td class="ship-2"></td>
-        <td></td>
-        <td></td>
-        <td></td>      
-        <td></td>       
+        <td class="ship-2"></td>              
       </tr>    
     </table>
   </div>

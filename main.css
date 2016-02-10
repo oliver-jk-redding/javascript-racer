@@ -36,22 +36,23 @@ html {
 }
 
 .track_container {
-  width: 750px;
-  height: 300px;
-  /*background-color: red;*/
+  width: 100%;
+  height: 300px;  
   position: absolute;
   margin: 20px;
 }
 
 .racer_table {
-  margin-top: auto;
-  margin-bottom: auto;
+  display:table;
+  margin-right:auto;
+  margin-left:auto;
+  width: 90%;   
 }
 
-#racer_table td {
-  /*background-color: blue;*/
+.racer_table td {  
+  display:table-cell;
   height: 150px;
-  width: 150px;
+  width: 10rem;    
 }
 
 .finish_line {
