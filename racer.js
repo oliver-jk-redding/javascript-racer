@@ -1,14 +1,16 @@
+//check page has loaded
 document.addEventListener("DOMContentLoaded", function() {
     
-    var distance = 10;
-    var ship1Pos = 0;
-    var ship2Pos = 0;
-    var ship1Positions = document.querySelectorAll("tr.player1_strip td");
-    var ship2Positions = document.querySelectorAll("tr.player2_strip td"); 
+    var distance = 10; //how long the race track is
+    var ship1Pos = 0; //ship1's position
+    var ship2Pos = 0; //ship2's position
+    var ship1Positions = document.querySelectorAll("tr.player1_strip td"); //a list of all the table cells in player1's track
+    var ship2Positions = document.querySelectorAll("tr.player2_strip td"); //a list of all the table cells in player2's track
 
-    newGame();   
+    newGame(); //start a new game
     
-    function updatePlayerPosition(ship) {        
+    function updatePlayerPosition(ship) {  
+      //if ship1 is moving, iterate through the list of table cells to find ship1, remove the 'ship-1' class, and add that class to the next table cell along      
       if(ship === "ship-1") {
         for (var i = 0; i < ship1Positions.length; ++i) {        
           if(i === ship1Pos) {
@@ -17,12 +19,14 @@ document.addEventListener("DOMContentLoaded", function() {
             ship1Positions[ship1Pos].className = "ship-1";
             break;
           }
-        }               
+        }  
+        //if ship1's new position is = to the distance of the race track, signal victory to player1             
         if(ship1Pos == distance) {
           alert("Player 1 wins!")
           document.removeEventListener("keyup", checkKeyPressed, false); 
         }   
       }
+      //if ship2 is moving, iterate through the list of table cells to find ship2, remove the 'ship-2' class, and add that class to the next table cell along             
       else if(ship === "ship-2") {        
         for (var i = 0; i < ship2Positions.length; ++i) {        
           if(i === ship2Pos) {
@@ -31,7 +35,8 @@ document.addEventListener("DOMContentLoaded", function() {
             ship2Positions[ship2Pos].className = "ship-2";
             break;
           }
-        }               
+        }   
+        //if ship2's new position is = to the distance of the race track, signal victory to player2              
         if(ship2Pos == distance) {
           alert("Player 2 wins!")
           document.removeEventListener("keyup", checkKeyPressed, false); 
@@ -39,6 +44,7 @@ document.addEventListener("DOMContentLoaded", function() {
       }        
     }
 
+    //check which key activated the eventlistener . If 81(q) move ship1 forward. Else if 80(p) move ship2 forward
     function checkKeyPressed(e) {        
       if (e.keyCode == "81") {                
         updatePlayerPosition("ship-1");      
@@ -48,15 +54,17 @@ document.addEventListener("DOMContentLoaded", function() {
       }
     }
 
+    //start a new game
     function newGame() {      
-      returnShipToStart("ship-1");
-      returnShipToStart("ship-2");
-      document.addEventListener("keyup", checkKeyPressed, false);
-      setDistance(distance);   
-      ship1Positions = document.querySelectorAll("tr.player1_strip td");
+      returnShipToStart("ship-1"); //return ship1 to start
+      returnShipToStart("ship-2"); //return ship2 to start
+      document.addEventListener("keyup", checkKeyPressed, false); //turn on eventlistener for keyboard
+      setDistance(distance); //reset the distance variable 
+      ship1Positions = document.querySelectorAll("tr.player1_strip td"); //reset the lists of table cells
       ship2Positions = document.querySelectorAll("tr.player2_strip td");    
     }
 
+    //return ships to starting positions. First find each ship's position on the table, then remove the "ship" class from that cell and append it to the starting cell. Reset the variable for the position of each ship.
     function returnShipToStart(ship) {
       if(ship === "ship-1") {
         for (var i = 0; i < ship1Positions.length; ++i) {        
@@ -80,36 +88,66 @@ document.addEventListener("DOMContentLoaded", function() {
       }    
     }
 
+    //fetch the value of the selected option in the distance select panel, then reset the game
     function changeDistance(e) {      
       distance = e.srcElement.value || e.target.value;
       newGame();
     }    
 
+    //create the track according to selected distance, but first delete the current track
     function setDistance(dist) {            
-      var player1Row = document.querySelector("tr.player1_strip");
-      var player2Row = document.querySelector("tr.player2_strip"); 
-      var player1Cells = document.querySelectorAll("tr.player1_strip td");
-      var player2Cells = document.querySelectorAll("tr.player2_strip td");
-      for(var i = player1Cells.length-2; i > 0; i--) {
-        player1Row.removeChild(player1Cells[i]);
-      }
-      for(var i = player2Cells.length-1; i > 0; i--) {
-        player2Row.removeChild(player2Cells[i]);
-      }      
-    for(var i = 0; i < dist; i++) {
-        var player1Cell = document.createElement("td");
-        var player2Cell = document.createElement("td");
-        var finishLine = document.querySelector("tr.player1_strip td.finish_line")
-        var player1Row = document.querySelector("tr.player1_strip");
-        var player2Row = document.querySelector("tr.player2_strip"); 
-        player1Row.insertBefore(player1Cell, finishLine);
-        player2Row.appendChild(player2Cell);
-      }
+      var rows = [
+        {
+          elements: document.querySelectorAll("tr.strip"),
+          name: "gen",
+          rowsCells: 
+            [
+              document.querySelectorAll("tr.strip.a td"),
+              document.querySelectorAll("tr.strip.b td"),
+              document.querySelectorAll("tr.strip.c td"),
+              document.querySelectorAll("tr.strip.d td")
+            ]
+        },
+        { 
+          elements: document.querySelectorAll("tr.player1_strip"), //player1's track
+          name: "p1row", 
+          rowsCells: [document.querySelectorAll("tr.player1_strip td")] //a list of all the cells in player1's track
+        }, 
+        {
+          elements: document.querySelectorAll("tr.player2_strip"), //player2's track
+          name: "p2row",
+          rowsCells: [document.querySelectorAll("tr.player2_strip td")] //a list of all the cells in player2's track
+        }  
+      ];
+
+      rows = rows.map(function(row) {
+        var rowLength = row.rowsCells[0].length;
+        console.log(row.rowsCells[0].length);
+        console.log(row.rowsCells[0][0]);
+        for(var i=rowLength; i>1; i--) {
+          for(var j=0; j<row.elements.length; j++) {
+            console.log(row.rowsCells[j][i-1]);
+            row.elements[j].removeChild(row.rowsCells[j][i-1]);
+          }
+        }
+        for(var i=0; i<dist; i++) {
+          for(var j=0; j<row.elements.length; j++) {    
+            var newCell = document.createElement("td"); //new cell
+            row.elements[j].appendChild(newCell); //add new cells to end of row   
+          }                 
+        } 
+        if(row.name === "p1row") {
+          row.elements[0].innerHTML = row.elements[0].innerHTML + "<td rowspan = \"2\" class = \"finish_line\" style = \"width:300;\"></td>";
+        }       
+        return row;        
+      });
     }    
-        
+    
+    //set up eventListener for the 'New Game' button    
     var newGameBtn = document.getElementById("newGame");
     newGameBtn.addEventListener("click", newGame, false);  
 
+    //set up eventListener for the select panel
     var distanceSelect = document.getElementById("distance");
     distanceSelect.addEventListener("change", changeDistance, false);
     

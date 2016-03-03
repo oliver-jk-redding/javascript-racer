@@ -1,11 +1,16 @@
 html {
-  background-image: url('images/space.jpg');
+  /*background-image: url('images/space.jpg');*/
+  background-color: white;
   background-size: cover;
   background-attachment: fixed;
 }
+table, th, tr, td {
+  border: 1px solid black;
+}
 
 .info_box {
-  color: yellow;
+  /*color: yellow;*/
+  color: black;
   padding: 10px 0px;
   text-align: center;
   max-width: 900px;
@@ -51,7 +56,7 @@ html {
 
 .racer_table td {  
   display:table-cell;
-  height: 150px;
+  height: 60px;
   width: 10rem;    
 }
 
