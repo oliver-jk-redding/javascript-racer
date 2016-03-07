@@ -1,5 +1,5 @@
 html {
-  /*background-image: url('images/space.jpg');*/
+  /* background-image: url('images/space.jpg'); */
   background-color: white;
   background-size: cover;
   background-attachment: fixed;
@@ -72,5 +72,10 @@ table, th, tr, td {
 
 .ship-2 {
   background: url('images/spaceship2.png') center no-repeat;
+  background-size: contain;
+}
+
+.asteroid {
+  background: url('images/asteroid.png') center no-repeat;
   background-size: contain;
 }
