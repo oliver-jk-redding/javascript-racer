@@ -1,5 +1,6 @@
 html {
   background-image: url('images/space.jpg');
+  background-color: white;
   background-size: cover;
   background-attachment: fixed;
 }
@@ -51,7 +52,7 @@ html {
 
 .racer_table td {  
   display:table-cell;
-  height: 150px;
+  height: 60px;
   width: 10rem;    
 }
 
@@ -67,5 +68,10 @@ html {
 
 .ship-2 {
   background: url('images/spaceship2.png') center no-repeat;
+  background-size: contain;
+}
+
+.asteroid {
+  background: url('images/asteroid.png') center no-repeat;
   background-size: contain;
 }
