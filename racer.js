@@ -10,8 +10,7 @@ document.addEventListener("DOMContentLoaded", function() {
         name: "generic",
         row: 0,
         querySelector: "tr.strip.a td",
-        rowCells: document.querySelectorAll("tr.strip.a td"),
-        objectsPos: []
+        rowCells: document.querySelectorAll("tr.strip.a td")
       },
       {
         element: document.querySelector("tr.strip.b"),
@@ -19,7 +18,6 @@ document.addEventListener("DOMContentLoaded", function() {
         row: 1,
         querySelector: "tr.strip.b td",
         rowCells: document.querySelectorAll("tr.strip.b td"),
-        objectsPos: []
       },
       { 
         element: document.querySelector("tr.player1_strip"), //player1's track
@@ -27,12 +25,6 @@ document.addEventListener("DOMContentLoaded", function() {
         row: 2, 
         querySelector: "tr.player1_strip td",
         rowCells: document.querySelectorAll("tr.player1_strip td"), //a list of all the cells in player1's track
-        objectsPos: [
-          {
-            name: "ship-1",
-            position: 0
-          }
-        ]
       }, 
       {
         element: document.querySelector("tr.player2_strip"), //player2's track
@@ -40,12 +32,6 @@ document.addEventListener("DOMContentLoaded", function() {
         row: 3,
         querySelector: "tr.player2_strip td",
         rowCells: document.querySelectorAll("tr.player2_strip td"), //a list of all the cells in player2's track
-        objectsPos: [
-          {
-            name: "ship-2",
-            position: 0
-          }
-        ]
       },
       {
         element: document.querySelector("tr.strip.c"),
@@ -61,7 +47,6 @@ document.addEventListener("DOMContentLoaded", function() {
         row: 5,
         querySelector: "tr.strip.d td",
         rowCells: document.querySelectorAll("tr.strip.d td"),
-        objectsPos: []
       }, 
     ];
 
@@ -71,23 +56,35 @@ document.addEventListener("DOMContentLoaded", function() {
       this.posY = y;
       this.cell = rows[this.posY].rowCells[this.posX];
       this.direction = dir; 
-      this.move = function() { 
+      this.move = function(backToStart) { 
         this.cell.className = this.cell.className.replace(this.name, '');
-        if(this.direction === "up") {
-          this.posY--;
-          if(this.posY < 0)
-            this.posY = 5;
+        if(backToStart === "back to start") {
+          this.posX = 0;
+          this.cell = rows[this.posY].rowCells[this.posX];
+          this.cell.className = this.name;
         }
-        else if(this.direction === "down") {
-          this.posY++;  
-          if(this.posY > 5)
-            this.posY = 0;      
+        else{
+          if(this.direction === "up") {
+            this.posY--;
+            if(this.posY < 0) {
+              this.direction = "down";
+              this.posY = 1;
+            }
+          }
+          else if(this.direction === "down") {
+            this.posY++;  
+            if(this.posY > 5) {
+              this.direction = "up"; 
+              this.posY = 4;    
+            }
+          }
+          else if(this.direction === "right") {
+            this.posX++;                 
+          }
+          this.cell = rows[this.posY].rowCells[this.posX];
+          this.cell.className = this.name;
+          checkForCollision(this);
         }
-        else if(this.direction === "right") {
-          this.posX++;                 
-        }
-        this.cell = rows[this.posY].rowCells[this.posX];
-        this.cell.className = this.name;
       };     
       this.spawn = function() {
         this.cell.className = this.name;
@@ -104,38 +101,30 @@ document.addEventListener("DOMContentLoaded", function() {
 
     newGame(); //start a new game
     
-    function updatePlayerPosition(ship) {
-      var track;
-      var shipPos;
-      var index;
-      
-      //check which ship is being called on and set variables accordingly
-      for(var i=2; i<=3; i++) {
-        if(rows[i].name === ship) {
-          track = rows[i].rowCells;
-          shipPos = rows[i].objectsPos[0].position;
-          index = i;
-        }
+    function updatePlayerPosition(shipName) {
+      var ship;      
+      for(var i=0; i<ships.length; i++) {
+        if(ships[i].name === shipName)
+          ship = ships[i];
       }
-      //find ship on track and move it
-      for(var i=0; i<track.length; i++) {
-        if(i === shipPos) {
-          track[shipPos].className = track[shipPos].className.replace(ship , '' );
-          shipPos ++;
-          track[shipPos].className = ship;
-          rows[index].objectsPos[0].position = shipPos;
-          break;
-        }
-      }
-      //check for asteroid collision
-      if(shipPos)
+      ship.move();
+      checkForCollision();
       //check for victory
-      if(shipPos == distance) {
-        alert(ship + " wins!");
+      if(ship.posX == distance) {
+        alert(shipName + " wins!");
         document.removeEventListener("keyup", checkKeyPressed, false); 
-        stopAsteroids();
+        stopAsteroids(intervalID);
       }
-    }     
+    }
+    function checkForCollision(ship) {
+      for(var ship=0; ship<ships.length; ship++) {
+        for(var asteroid=0; asteroid<asteroids.length; asteroid++) {
+          if(ships[ship].posX == asteroids[asteroid].posX && ships[ship].posY == asteroids[asteroid].posY) {
+            ships[ship].move("back to start");
+          } 
+        }
+      }
+    }    
 
     //check which key activated the eventlistener . If 81(q) move ship1 forward. Else if 80(p) move ship2 forward
     function checkKeyPressed(e) {        
@@ -149,19 +138,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
     //start a new game
     function newGame() {      
-      populateGalaxy();
-      returnShipsToStart();
       document.addEventListener("keyup", checkKeyPressed, false); //turn on eventlistener for keyboard
-      setDistance(distance); //reset the distance variable 
-      spawnAsteroids();      
-    }
-
-    /*function returnShipsToStart() {      
-      for(var i=2; i<=3; i++) {
-        rows[i].rowCells[0].className = "ship-" + (i-1);
-        rows[i].objectsPos[0].position = 0;
-      }
-    }*/
+      setDistance(distance);
+      // spawn ships and asteroids();  
+      populateGalaxy();    
+    }    
       
     //fetch the value of the selected option in the distance select panel, then reset the game
     function changeDistance(e) {      
@@ -191,21 +172,48 @@ document.addEventListener("DOMContentLoaded", function() {
 
     var intervalID;
     function populateGalaxy() {
+      if(intervalID !== undefined) {
+        stopAsteroids(intervalID);
+      }
+      ships = [];
+      asteroids = [];
+      //make ships
       ships.push(new Ship("ship-1", 0, 2, "right"));
       ships.push(new Ship("ship-2", 0, 3, "right"));
       for(var i=0; i<ships.length; i++)
         ships[i].spawn();
-      asteroids.push(new Asteroid("asteroid", 5, 5, "up"));
-      for(var i=0; i<asteroids.length; i++) {
-        asteroids[i].spawn();
-        intervalID = setInterval(function() { 
-          asteroids[i].move();
-        }, 500);
+      //make asteroids
+      var asteroidsX = [];;      
+      for(var i=0; i<distance; i++) {
+        asteroidsX.push(i);
       }
+      asteroidsX = asteroidsX.filter(function(val) {
+        return val % 3 == 0;
+      });
+      function asteroidsY() {
+        return Math.floor(Math.random() * 6);
+      }
+      function asteroidDirection() {
+        var dir = Math.floor(Math.random() * 2);
+        if(dir === 0)
+          return "up";
+        else
+          return "down";
+      }
+      for(var i=1; i<asteroidsX.length; i++) {
+        var asteroid = new Asteroid("asteroid", asteroidsX[i], asteroidsY(), asteroidDirection());
+        asteroids.push(asteroid);
+        asteroid.spawn();
+      }
+      intervalID = setInterval(function() { 
+        for(var i=0; i<asteroids.length; i++) {
+          asteroids[i].move();
+        }
+      }, 500);
     } 
 
-    function stopAsteroids() {
-      clearInterval(intervalID);
+    function stopAsteroids(id) {
+      clearInterval(id);
     } 
     
     //set up eventListener for the 'New Game' button    
